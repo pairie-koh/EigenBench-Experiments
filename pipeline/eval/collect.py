@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 from pipeline.utils import extract_comparisons_with_ties_criteria
-from .criteria_collectors import collect_group_criteria_evaluations
+from .criteria_collectors import (
+    collect_group_criteria_evaluations,
+    collect_group_criteria_evaluations_pointwise,
+)
 from .samplers import select_sampler
 
 
@@ -37,6 +40,7 @@ def collect_core_evaluations(
     judge_prompt_prefix_fn=None,
     max_tokens=4096,
     verbose: bool = False,
+    mode: str = "pairwise",
 ):
     """Collect one scenario's criterion-wise evaluations.
 
@@ -52,7 +56,12 @@ def collect_core_evaluations(
         alpha: In adaptive inverse-count sampling, larger alpha increases
             preference for under-sampled judges/evaluees. alpha=0 is uniform.
             Practical range is usually 1.0-2.0.
+        mode: Collection mode — ``"pairwise"`` (default) or ``"pointwise"``.
     """
+
+    collection_mode = (mode or "pairwise").strip().lower()
+    if collection_mode not in {"pairwise", "pointwise"}:
+        raise ValueError(f"Unknown collection mode: {mode!r}. Use 'pairwise' or 'pointwise'.")
 
     num_models = len(models)
     mode = (sampler_mode or "random_judge_group").strip().lower()
@@ -98,8 +107,14 @@ def collect_core_evaluations(
             )
 
         if verbose:
-            print(f"Group round {round_idx + 1}/{group_count}")
-        batch_evaluations = collect_group_criteria_evaluations(
+            print(f"Group round {round_idx + 1}/{group_count} (mode={collection_mode})")
+
+        collector = (
+            collect_group_criteria_evaluations_pointwise
+            if collection_mode == "pointwise"
+            else collect_group_criteria_evaluations
+        )
+        batch_evaluations = collector(
             criteria=criteria,
             scenario=scenario,
             scenario_index=scenario_index,

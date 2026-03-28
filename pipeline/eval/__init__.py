@@ -3,11 +3,15 @@
 from .samplers import select_sampler
 from .collect import collect_core_evaluations
 from .flows import collect_responses_only
-from .criteria_collectors import collect_group_criteria_evaluations
+from .criteria_collectors import (
+    collect_group_criteria_evaluations,
+    collect_group_criteria_evaluations_pointwise,
+)
 
 __all__ = [
     "select_sampler",
     "collect_core_evaluations",
     "collect_responses_only",
     "collect_group_criteria_evaluations",
+    "collect_group_criteria_evaluations_pointwise",
 ]

@@ -25,4 +25,13 @@ data/*
 !runs/matrix/
 !runs/matrix/*/
 !runs/matrix/**/spec.py
+
+!runs/pointwise_experiment/
+!runs/pointwise_experiment/*/
+!runs/pointwise_experiment/**/__init__.py
+!runs/pointwise_experiment/**/spec.py
+
+# Allow downloaded scenario datasets
+!data/scenarios/
+!data/scenarios/**
 notebooks/character_train_matrix.ipynb

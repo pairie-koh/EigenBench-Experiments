@@ -111,6 +111,7 @@ def main(spec_ref: str):
             alpha=float(cfg.get("alpha", 2.0)),
             cached_responses_by_scenario=cached_index,
             verbose=verbose,
+            mode=cfg.get("mode", "pairwise"),
         )
         append_records(evaluations_path, new_evals)
         if verbose:
