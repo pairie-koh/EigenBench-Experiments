@@ -35,6 +35,8 @@ RUN_SPEC = {
         "group_size": 4,
         "groups": 1,
         "sampler_mode": "random_judge_group",
+        # Same deterministic seed as pairwise — ensures identical judge/evaluee assignments.
+        "sampler_seed": 2026,
         # Same shared response cache as pairwise — ensures identical Phase 1 responses.
         "cached_responses_path": "runs/pointwise_experiment/shared_responses.jsonl",
         "evaluations_path": "runs/pointwise_experiment/pointwise/evaluations.jsonl",

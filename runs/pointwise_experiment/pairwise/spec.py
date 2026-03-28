@@ -35,6 +35,9 @@ RUN_SPEC = {
         "group_size": 4,
         "groups": 1,
         "sampler_mode": "random_judge_group",
+        # Deterministic sampler seed — ensures identical judge/evaluee assignments
+        # across both conditions. Must be the same value in both specs.
+        "sampler_seed": 2026,
         # Shared response cache — both conditions use the same model responses.
         # Run the pairwise spec first to populate, then pointwise reuses them.
         "cached_responses_path": "runs/pointwise_experiment/shared_responses.jsonl",

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import random
+
 from pipeline.utils import extract_comparisons_with_ties_criteria
 from .criteria_collectors import (
     collect_group_criteria_evaluations,
@@ -41,6 +43,7 @@ def collect_core_evaluations(
     max_tokens=4096,
     verbose: bool = False,
     mode: str = "pairwise",
+    sampler_seed: int | None = None,
 ):
     """Collect one scenario's criterion-wise evaluations.
 
@@ -57,6 +60,10 @@ def collect_core_evaluations(
             preference for under-sampled judges/evaluees. alpha=0 is uniform.
             Practical range is usually 1.0-2.0.
         mode: Collection mode — ``"pairwise"`` (default) or ``"pointwise"``.
+        sampler_seed: If set, seed the RNG before each sampler call using
+            ``sampler_seed * 10000 + scenario_index * 10 + round_idx``.
+            This makes judge/evaluee selection deterministic and reproducible
+            across runs that share the same seed (e.g. pairwise vs pointwise).
     """
 
     collection_mode = (mode or "pairwise").strip().lower()
@@ -76,6 +83,12 @@ def collect_core_evaluations(
     new_evaluations = []
 
     for round_idx in range(group_count):
+        # Deterministic seeding: ensures identical judge/evaluee assignments
+        # across runs that share the same sampler_seed (e.g. pairwise vs
+        # pointwise conditions in a controlled experiment).
+        if sampler_seed is not None:
+            random.seed(sampler_seed * 10000 + scenario_index * 10 + round_idx)
+
         if mode in {"adaptive_inverse_count", "uniform"}:
             all_evals = list(evaluations) + list(new_evaluations)
             if all_evals:

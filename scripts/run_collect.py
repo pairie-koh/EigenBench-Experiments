@@ -112,6 +112,7 @@ def main(spec_ref: str):
             cached_responses_by_scenario=cached_index,
             verbose=verbose,
             mode=cfg.get("mode", "pairwise"),
+            sampler_seed=cfg.get("sampler_seed"),
         )
         append_records(evaluations_path, new_evals)
         if verbose:
